@@ -8,6 +8,12 @@ dotenv.config();
 require("dotenv").config({ path: "backend/config/config.env" });
 
 connectDatabase();
+// Handling Uncaught Exception
+process.on("uncaughtException", (err) => {
+    console.log(`Error: ${err.message}`);
+    console.log(`Shutting down the server due to Uncaught Exception`);
+    process.exit(1);
+  });
 
 app.use("/api/v1", product);
 // const URI = process.env.MONGO_URL;
@@ -26,9 +32,19 @@ app.use("/api/v1", product);
 
 
 
-app.listen(process.env.port,()=>{
+const server = app.listen(process.env.port,()=>{
 
     console.log(`server is working on http://localhost:${process.env.PORT}`)
 
 
-})
+});
+
+// Unhandled Promise Rejection
+process.on("unhandledRejection", (err) => {
+    console.log(`Error: ${err.message}`);
+    console.log(`Shutting down the server due to Unhandled Promise Rejection`);
+  
+    server.close(() => {
+      process.exit(1);
+    });
+  });
