@@ -1,2 +1,2 @@
-config
+app/config.env
 node_modules
