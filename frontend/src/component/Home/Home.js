@@ -5,6 +5,8 @@ import ProductCard from "./ProductCard.js";
 
 import { clearErrors, getProduct } from "../../actions/productAction";
 import { useSelector, useDispatch } from "react-redux";
+import Loader from "../layout/Loader/Loader";
+import { useAlert } from "react-alert";
 
 // const products={
 //     name:"Blue t-SHIRT",
@@ -17,42 +19,49 @@ import { useSelector, useDispatch } from "react-redux";
 
 
 const Home = () => {
-
+  const alert = useAlert();
   const dispatch = useDispatch();
-  const {  products } = useSelector((state) => state.products);
+  const { loading, error, products } = useSelector((state) => state.products);
 
   useEffect(() => {
-  
-      dispatch(clearErrors());
- 
+    if (error) {
+     return alert.error(error);
+     // dispatch(clearErrors());
+    }
     dispatch(getProduct());
-  }, [dispatch]);
+  }, [dispatch, error]);
 
   return (
   
-        <Fragment>
-         
+    <Fragment>
+    {loading ? (
+      <Loader />
+    ) : (
+      <Fragment>
+      
 
-          <div className="banner">
-            <p>Welcome to Ecommerce</p>
-            <h1>FIND AMAZING PRODUCTS BELOW</h1>
+        <div className="banner">
+          <p>Welcome to Ecommerce</p>
+          <h1>FIND AMAZING PRODUCTS BELOW</h1>
 
-            <a href="#container">
-              <button>
-                Scroll 
-              </button>
-            </a>
-          </div>
+          <a href="#container">
+            <button>
+              Scroll 
+            </button>
+          </a>
+        </div>
 
-          <h2 className="homeHeading">Featured Products</h2>
+        <h2 className="homeHeading">Featured Products</h2>
 
-<div className="container" id="container">
-  {products &&
-    products.map((product) => (
-      <ProductCard product={product} />
-    ))}
-</div>
-        </Fragment>
+        <div className="container" id="container">
+          {products &&
+            products.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+        </div>
+      </Fragment>
+    )}
+  </Fragment>
     
    
   );

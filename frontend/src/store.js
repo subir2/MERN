@@ -30,7 +30,7 @@ import {
 
 const reducer = combineReducers({
   products: productsReducer,
-//   productDetails: productDetailsReducer,
+ productDetails: productDetailsReducer,
 //   user: userReducer,
 //   profile: profileReducer,
 //   forgotPassword: forgotPasswordReducer,
