@@ -11,6 +11,7 @@ import { useAlert } from "react-alert";
 import Typography from "@material-ui/core/Typography";
 
 const categories = [
+  "ALL",
   "Laptop",
   "Footwear",
   "Bottom",
@@ -46,13 +47,16 @@ const Products = () => {
         setPrice(newPrice);
       };
       useEffect(() => {
-        
+        if (error) {
+          alert.error(error);
+          dispatch(clearErrors());
+        }
     
         dispatch(getProduct(keyword,currentPage,price,category,ratings));
-      }, [dispatch,keyword,currentPage,price,category,ratings]);
+      }, [dispatch,keyword,currentPage,price,category,ratings,alert, error]);
 
        
-        let count= filteredProductsCount;
+       // let count= filteredProductsCount;
     return (
         <Fragment>
         {loading ? (

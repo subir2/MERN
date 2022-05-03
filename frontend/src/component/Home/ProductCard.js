@@ -26,7 +26,7 @@ const ProductCard = ({product}) => {
         ({product.numOfReviews} Reviews)
       </span>
     </div>
-    <span>{`₹${product.price}`}</span>
+    <span>{`BDT ${product.price}`}</span>
   </Link>
   );
 };
