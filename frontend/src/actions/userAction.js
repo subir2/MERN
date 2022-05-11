@@ -99,17 +99,20 @@ export const register = (userData) => async (dispatch) => {
     try {
       const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
       dispatch({ type: REGISTER_USER_REQUEST });
+      dispatch({ type: LOGIN_REQUEST });
   
       const config = { headers: { "Content-Type": "multipart/form-data" } };
   
       const { data } = await axios.post(`${rootUrl}/api/v1/register`, userData, config);
   
       dispatch({ type: REGISTER_USER_SUCCESS, payload: data.user });
+      dispatch({ type: TOKEN_USER_SUCCESS, payload: data.token});
     } catch (error) {
       dispatch({
         type: REGISTER_USER_FAIL,
         payload: error.response.data.message,
       });
+     
     }
   };
   
