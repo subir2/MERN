@@ -2,29 +2,41 @@ import React from "react";
 import playStore from "../../../images/playstore.png";
 import appStore from "../../../images/Appstore.png";
 import "./Footer.css";
+import FacebookIcon from '@mui/icons-material/Facebook';
+import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 
+import BusinessIcon from '@mui/icons-material/Business';
 const Footer = () => {
   return (
     <footer id="footer">
       <div className="leftFooter">
-        <h4>DOWNLOAD OUR APP</h4>
-        <p>Download App for Android and IOS mobile phone</p>
-        <img src={playStore} alt="playstore" />
-        <img src={appStore} alt="Appstore" />
+        <h4>Contact Us</h4>
+        <br></br>
+        <ContactPhoneIcon className="phoneSvgIcon"/><p>01770-191336</p>
+        <br></br>
+        <BusinessIcon className="bSvgIcon"/><p>Mirpur 10, Dhaka, Bangladesh, 1216</p>
+       
+        
+        
       </div>
 
       <div className="midFooter">
-        <h1>X.</h1>
+        <h1>Redlubbers</h1>
         <p>High Quality is our first priority</p>
 
-        <p>Copyrights 2021 &copy; shawon</p>
+        <p>Copyrights&copy; Redlubbers</p>
       </div>
 
       <div className="rightFooter">
-        <h4>Follow Us</h4>
-        <a href="http://instagram.com/meabhisingh">Instagram</a>
-        <a href="http://youtube.com/6packprogramemr">Youtube</a>
-        <a href="http://instagram.com/meabhisingh">Facebook</a>
+      <h3>Follow Us</h3>
+   
+        <a
+              href="https://www.facebook.com/RedLubbers"
+              target="blank"
+            >
+              <FacebookIcon className="youtubeSvgIcon" />
+            </a>
+
       </div>
     </footer>
   );

@@ -57,7 +57,7 @@ function App() {
   }, []);
 
 
-  window.addEventListener("contextmenu", (e) => e.preventDefault());
+  //window.addEventListener("contextmenu", (e) => e.preventDefault());
   return (
     <Router>
       
@@ -85,13 +85,14 @@ function App() {
 
             </Route>
 
-
+            <Route exact path="/login" component={LoginSignUp} />
             <ProtectedRoute exact path="/account" component={Profile} />
 
 <ProtectedRoute exact path="/me/update" component={UpdateProfile} />
 <ProtectedRoute exact path="/order/confirm" component={ConfirmOrder} />
 
 
+          
             <ProtectedRoute
           exact
           path="/password/update"
@@ -184,13 +185,15 @@ function App() {
        <Route exact path="/contact" component={Contact} />
 
 <Route exact path="/about" component={About} />
-<Route
-          component={NotFound}
-        />
 
-            <Route path="/login">
-            <LoginSignUp></LoginSignUp>
-            </Route>
+
+<Route path="*" >
+
+<NotFound></NotFound>
+</Route>
+
+
+
 
             </Switch>
       <Footer/>

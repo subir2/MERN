@@ -38,6 +38,10 @@ import {
     USER_DETAILS_REQUEST,
     USER_DETAILS_SUCCESS,
     USER_DETAILS_FAIL,
+    TOKEN_USER_REQUEST,
+    TOKEN_USER_SUCCESS,
+    TOKEN_USER_FAIL,
+  
      CLEAR_ERRORS,
   } from "../constants/userConstants";
 
@@ -46,6 +50,7 @@ import {
       case LOGIN_REQUEST:
       case REGISTER_USER_REQUEST:
       case LOAD_USER_REQUEST:
+    
         return {
           loading: true,
           isAuthenticated: false,
@@ -53,12 +58,13 @@ import {
       case LOGIN_SUCCESS:
       case REGISTER_USER_SUCCESS:
       case LOAD_USER_SUCCESS:
+        
         return {
           ...state,
           loading: false,
           isAuthenticated: true,
           user: action.payload,
-        };
+         };
   
       case LOGOUT_SUCCESS:
         return {
@@ -68,6 +74,7 @@ import {
         };
       case LOGIN_FAIL:
       case REGISTER_USER_FAIL:
+     
         return {
           ...state,
           loading: false,
@@ -83,6 +90,60 @@ import {
           user: null,
           error: action.payload,
         };
+  
+      case LOGOUT_FAIL:
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+        };
+  
+      case CLEAR_ERRORS:
+        return {
+          ...state,
+          error: null,
+        };
+  
+      default:
+        return state;
+    }
+  };
+
+
+  export const tokenreduces = (state = { token: {} }, action) => {
+    switch (action.type) {
+
+        case TOKEN_USER_REQUEST:
+        return {
+          loading: true,
+          isAuthenticated: false,
+        };
+ 
+        case TOKEN_USER_SUCCESS:
+        return {
+          ...state,
+          loading: false,
+          isAuthenticated: true,
+          token: action.payload,
+         };
+  
+      case LOGOUT_SUCCESS:
+        return {
+          loading: false,
+          token: null,
+          isAuthenticated: false,
+        };
+      
+        case TOKEN_USER_FAIL :
+        return {
+          ...state,
+          loading: false,
+          isAuthenticated: false,
+          token: null,
+          error: action.payload,
+        };
+  
+  
   
       case LOGOUT_FAIL:
         return {

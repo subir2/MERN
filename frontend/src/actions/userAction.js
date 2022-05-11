@@ -34,38 +34,75 @@ import {
     USER_DETAILS_REQUEST,
     USER_DETAILS_SUCCESS,
     USER_DETAILS_FAIL,
+    TOKEN_USER_REQUEST,
+   TOKEN_USER_SUCCESS,
+    TOKEN_USER_FAIL,
     CLEAR_ERRORS,
   } from "../constants/userConstants";
   import axios from "axios";
+  import store from './../store';
+  //axios.defaults.baseURL = 'https://cryptic-eyrie-92448.herokuapp.com';
   
   // Login
   export const login = (email, password) => async (dispatch) => {
     try {
+      const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
       dispatch({ type: LOGIN_REQUEST });
+     
   
       const config = { headers: { "Content-Type": "application/json" } };
   
       const { data } = await axios.post(
-        `/api/v1/login`,
+        `${rootUrl}/api/v1/login`,
         { email, password },
         config
       );
   
-      dispatch({ type: LOGIN_SUCCESS, payload: data.user });
+      dispatch({ type: LOGIN_SUCCESS, payload: data.user});
+      dispatch({ type: TOKEN_USER_SUCCESS, payload: data.token});
+    
+
     } catch (error) {
       dispatch({ type: LOGIN_FAIL, payload: error.response.data.message });
+      
     }
   };
+  
+
+  //  // token
+  //  export const token = (email, password) => async (dispatch) => {
+  //   try {
+  //     const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
+  //     dispatch({ type: TOKEN_USER_REQUEST });
+     
+  
+  //     const config = { headers: { "Content-Type": "application/json" } };
+  
+  //     const { data } = await axios.post(
+  //       `${rootUrl}/api/v1/login`,
+  //       { email, password },
+  //       config
+  //     );
+  
+  //     dispatch({ type: TOKEN_USER_SUCCESS, payload: data.token});
+    
+
+  //   } catch (error) {
+  //     dispatch({ type: TOKEN_USER_FAIL, payload: error.response.data.message });
+      
+  //   }
+  // };
   
 
   // Register
 export const register = (userData) => async (dispatch) => {
     try {
+      const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
       dispatch({ type: REGISTER_USER_REQUEST });
   
       const config = { headers: { "Content-Type": "multipart/form-data" } };
   
-      const { data } = await axios.post(`/api/v1/register`, userData, config);
+      const { data } = await axios.post(`${rootUrl}/api/v1/register`, userData, config);
   
       dispatch({ type: REGISTER_USER_SUCCESS, payload: data.user });
     } catch (error) {
@@ -79,9 +116,10 @@ export const register = (userData) => async (dispatch) => {
   // Load User
   export const loadUser = () => async (dispatch) => {
     try {
+      const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
       dispatch({ type: LOAD_USER_REQUEST });
   
-      const { data } = await axios.get(`/api/v1/me`);
+      const { data } = await axios.get(`${rootUrl}/api/v1/me`);
   
       dispatch({ type: LOAD_USER_SUCCESS, payload: data.user });
     } catch (error) {
@@ -92,7 +130,8 @@ export const register = (userData) => async (dispatch) => {
   // Logout User
   export const logout = () => async (dispatch) => {
     try {
-      await axios.get(`/api/v1/logout`);
+      const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
+      await axios.get(`${rootUrl}/api/v1/logout`);
   
       dispatch({ type: LOGOUT_SUCCESS });
     } catch (error) {
@@ -103,11 +142,12 @@ export const register = (userData) => async (dispatch) => {
   // Update Profile
 export const updateProfile = (userData) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: UPDATE_PROFILE_REQUEST });
 
-    const config = { headers: { "Content-Type": "multipart/form-data" } };
+    const config = { headers: { "Content-Type": "multipart/form-data", 'authorization':store.getState().token.token } };
 
-    const { data } = await axios.put(`/api/v1/me/update`, userData, config);
+    const { data } = await axios.put(`${rootUrl}/api/v1/me/update`, userData, config,);
 
     dispatch({ type: UPDATE_PROFILE_SUCCESS, payload: data.success });
   } catch (error) {
@@ -121,14 +161,15 @@ export const updateProfile = (userData) => async (dispatch) => {
 // Update Password
 export const updatePassword = (passwords) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: UPDATE_PASSWORD_REQUEST });
 
-    const config = { headers: { "Content-Type": "application/json" } };
+    const config = { headers: { "Content-Type": "application/json"} };
 
     const { data } = await axios.put(
-      `/api/v1/password/update`,
+      `${rootUrl}/api/v1/password/update`,
       passwords,
-      config
+      config,
     );
 
     dispatch({ type: UPDATE_PASSWORD_SUCCESS, payload: data.success });
@@ -143,11 +184,12 @@ export const updatePassword = (passwords) => async (dispatch) => {
 // Forgot Password
 export const forgotPassword = (email) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: FORGOT_PASSWORD_REQUEST });
 
     const config = { headers: { "Content-Type": "application/json" } };
 
-    const { data } = await axios.post(`/api/v1/password/forget`, email, config);
+    const { data } = await axios.post(`${rootUrl}/api/v1/password/forget`, email, config);
 
     dispatch({ type: FORGOT_PASSWORD_SUCCESS, payload: data.message });
   } catch (error) {
@@ -161,12 +203,13 @@ export const forgotPassword = (email) => async (dispatch) => {
 // Reset Password
 export const resetPassword = (token, passwords) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: RESET_PASSWORD_REQUEST });
 
-    const config = { headers: { "Content-Type": "application/json" } };
+    const config = { headers: { "Content-Type": "application/json"} };
 
     const { data } = await axios.put(
-      `/api/v1/password/reset/${token}`,
+      `${rootUrl}/api/v1/password/reset/${token}`,
       passwords,
       config
     );
@@ -183,8 +226,13 @@ export const resetPassword = (token, passwords) => async (dispatch) => {
 // get All Users
 export const getAllUsers = () => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: ALL_USERS_REQUEST });
-    const { data } = await axios.get(`/api/v1/admin/users`);
+    const { data } = await axios.get(`${rootUrl}/api/v1/admin/users`,{
+      headers: {
+        'authorization':store.getState().token.token//token//`${token}`
+      }
+    });
 
     dispatch({ type: ALL_USERS_SUCCESS, payload: data.users });
   } catch (error) {
@@ -192,11 +240,18 @@ export const getAllUsers = () => async (dispatch) => {
   }
 };
 
+
+
 // get  User Details
 export const getUserDetails = (id) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: USER_DETAILS_REQUEST });
-    const { data } = await axios.get(`/api/v1/admin/user/${id}`);
+    const { data } = await axios.get(`${rootUrl}/api/v1/admin/user/${id}`,{
+      headers: {
+        'authorization':store.getState().token.token//token//`${token}`
+      }
+    });
 
     dispatch({ type: USER_DETAILS_SUCCESS, payload: data.user });
   } catch (error) {
@@ -207,14 +262,16 @@ export const getUserDetails = (id) => async (dispatch) => {
 // Update User
 export const updateUser = (id, userData) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: UPDATE_USER_REQUEST });
 
-    const config = { headers: { "Content-Type": "application/json" } };
+    const config = { headers: { "Content-Type": "application/json", 'authorization':store.getState().token.token } };
 
     const { data } = await axios.put(
-      `/api/v1/admin/user/${id}`,
+      `${rootUrl}/api/v1/admin/user/${id}`,
       userData,
-      config
+      config,
+  
     );
 
     dispatch({ type: UPDATE_USER_SUCCESS, payload: data.success });
@@ -229,9 +286,14 @@ export const updateUser = (id, userData) => async (dispatch) => {
 // Delete User
 export const deleteUser = (id) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: DELETE_USER_REQUEST });
 
-    const { data } = await axios.delete(`/api/v1/admin/user/${id}`);
+    const { data } = await axios.delete(`${rootUrl}/api/v1/admin/user/${id}`,{
+      headers: {
+        'authorization':store.getState().token.token//token//`${token}`
+      }
+    });
 
     dispatch({ type: DELETE_USER_SUCCESS, payload: data });
   } catch (error) {

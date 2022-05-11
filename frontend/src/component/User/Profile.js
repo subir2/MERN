@@ -4,15 +4,23 @@ import {  useLocation, useHistory } from 'react-router-dom';
 import Loader from "../layout/Loader/Loader";
 import { Link } from "react-router-dom";
 import "./Profile.css";
+import store from './../../store'
 
 const Profile = () => {
   const { user, loading, isAuthenticated } = useSelector((state) => state.user);
+  const {token} = useSelector((state) => state.token);
   const history = useHistory();
+  // const {token} = store.getState().token;
+
+  // console.log('what is currently in store', store.getState().token);
+  console.log(token);
+ 
   useEffect(() => {
     if (isAuthenticated === false) {
       history.push("/login");
     }
   }, [history, isAuthenticated]);
+   //console.log(token);
   return (
     <Fragment>
       {loading ? (

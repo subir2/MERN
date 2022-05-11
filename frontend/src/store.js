@@ -17,6 +17,8 @@ import {
    profileReducer,
    userDetailsReducer,
   userReducer,
+  tokenreduces,
+
 } from "./reducers/userReducer";
 
  import { cartReducer } from "./reducers/cartReducer";
@@ -32,6 +34,7 @@ const reducer = combineReducers({
   products: productsReducer,
  productDetails: productDetailsReducer,
   user: userReducer,
+   token:tokenreduces,
   profile: profileReducer,
    forgotPassword: forgotPasswordReducer,
    cart: cartReducer,
@@ -62,10 +65,13 @@ let initialState = {
 
 const middleware = [thunk];
 
+
 const store = createStore(
   reducer,
   initialState,
   composeWithDevTools(applyMiddleware(...middleware))
 );
-
+store.subscribe(() => {
+  console.log(store.getState()); // returns the right state, updates properly
+});
 export default store;

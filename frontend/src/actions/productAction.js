@@ -30,21 +30,24 @@ import {
   DELETE_REVIEW_FAIL,
   CLEAR_ERRORS,
 } from "../constants/productConstants";
-
+import store from './../store';
+//axios.defaults.baseURL = 'https://cryptic-eyrie-92448.herokuapp.com';
+const {token} = store.getState().token;
 // Get All Products
 export const getProduct =(keyword = "",currentPage = 1,price = [0, 25000],category,ratings = 0)=>
 
   async (dispatch) => {
     try {
+      const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
       dispatch({ type: ALL_PRODUCT_REQUEST });
-      let link = `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${ratings}`;
+      let link = `${rootUrl}/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${ratings}`;
 
       if (category==="ALL") {
-        link = `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${ratings}`;
+        link = `${rootUrl}/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${ratings}`;
       }
 
       if (category && category!="ALL" ) {
-        link = `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&category=${category}&ratings[gte]=${ratings}`;
+        link = `${rootUrl}/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&category=${category}&ratings[gte]=${ratings}`;
       }
 
      // let link = `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${ratings}`;
@@ -70,9 +73,10 @@ export const getProduct =(keyword = "",currentPage = 1,price = [0, 25000],catego
   // Get Products Details
 export const getProductDetails = (id) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: PRODUCT_DETAILS_REQUEST });
 
-    const { data } = await axios.get(`/api/v1/product/${id}`);
+    const { data } = await axios.get(`${rootUrl}/api/v1/product/${id}`);
 
     //console.log({ data } );
     dispatch({
@@ -91,9 +95,13 @@ export const getProductDetails = (id) => async (dispatch) => {
 // Get All Products For Admin
 export const getAdminProduct = () => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: ADMIN_PRODUCT_REQUEST });
 
-    const { data } = await axios.get("/api/v1/admin/products");
+    const { data } = await axios.get(`${rootUrl}/api/v1/admin/products`, {      headers: {
+      'authorization':store.getState().token.token
+    }
+    });
 
     dispatch({
       type: ADMIN_PRODUCT_SUCCESS,
@@ -111,16 +119,20 @@ export const getAdminProduct = () => async (dispatch) => {
 // Update Product
 export const updateProduct = (id, productData) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: UPDATE_PRODUCT_REQUEST });
 
     const config = {
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 'authorization':store.getState().token.token},
+      
     };
 
     const { data } = await axios.put(
-      `/api/v1/admin/product/${id}`,
+      `${rootUrl}/api/v1/admin/product/${id}`,
       productData,
-      config
+      config,
+     
+      
     );
 
     dispatch({
@@ -138,9 +150,15 @@ export const updateProduct = (id, productData) => async (dispatch) => {
 // Delete Product
 export const deleteProduct = (id) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: DELETE_PRODUCT_REQUEST });
 
-    const { data } = await axios.delete(`/api/v1/admin/product/${id}`);
+    const { data } = await axios.delete(`${rootUrl}/api/v1/admin/product/${id}`,{
+      headers: {
+        'authorization':store.getState().token.token
+      }
+
+    });
 
     dispatch({
       type: DELETE_PRODUCT_SUCCESS,
@@ -159,13 +177,15 @@ export const deleteProduct = (id) => async (dispatch) => {
 // NEW REVIEW
 export const newReview = (reviewData) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: NEW_REVIEW_REQUEST });
 
     const config = {
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",
+      'authorization':store.getState().token.token },
     };
 
-    const { data } = await axios.put(`/api/v1/review`, reviewData, config);
+    const { data } = await axios.put(`${rootUrl}/api/v1/review`, reviewData, config);
 
     dispatch({
       type: NEW_REVIEW_SUCCESS,
@@ -182,9 +202,14 @@ export const newReview = (reviewData) => async (dispatch) => {
 // Get All Reviews of a Product
 export const getAllReviews = (id) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: ALL_REVIEW_REQUEST });
 
-    const { data } = await axios.get(`/api/v1/reviews?id=${id}`);
+    const { data } = await axios.get(`${rootUrl}/api/v1/reviews?id=${id}`,{
+      headers: {
+        'authorization':store.getState().token.token
+      }
+    });
 
     dispatch({
       type: ALL_REVIEW_SUCCESS,
@@ -201,10 +226,15 @@ export const getAllReviews = (id) => async (dispatch) => {
 // Delete Review of a Product
 export const deleteReviews = (reviewId, productId) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     dispatch({ type: DELETE_REVIEW_REQUEST });
 
     const { data } = await axios.delete(
-      `/api/v1/reviews?id=${reviewId}&productId=${productId}`
+      `${rootUrl}/api/v1/reviews?id=${reviewId}&productId=${productId}`,{
+        headers: {
+          'authorization':store.getState().token.token
+        }
+      }
     );
 
     dispatch({
@@ -223,14 +253,16 @@ export const deleteReviews = (reviewId, productId) => async (dispatch) => {
 // Create Product
 export const createProduct = (productData) => async (dispatch) => {
   try {
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : "https://cryptic-eyrie-92448.herokuapp.com"
     dispatch({ type: NEW_PRODUCT_REQUEST });
 
     const config = {
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",
+      'authorization':store.getState().token.token },
     };
 
     const { data } = await axios.post(
-      `/api/v1/admin/product/new`,
+      `${rootUrl}/api/v1/admin/product/new`,
       productData,
       config
     );

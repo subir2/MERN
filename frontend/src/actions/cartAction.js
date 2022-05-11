@@ -4,10 +4,11 @@ import {
     SAVE_SHIPPING_INFO,
   } from "../constants/cartConstants";
   import axios from "axios";
-  
+ //axios.defaults.baseURL = 'https://cryptic-eyrie-92448.herokuapp.com';
   // Add to Cart
   export const addItemsToCart = (id, quantity) => async (dispatch, getState) => {
-    const { data } = await axios.get(`/api/v1/product/${id}`);
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
+    const { data } = await axios.get(`${rootUrl}/api/v1/product/${id}`);
   
     dispatch({
       type: ADD_TO_CART,

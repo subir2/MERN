@@ -6,6 +6,12 @@ footer {
     display: flex;
     align-items: center;
   }
+  .youtubeSvgIcon {
+    color: #4267B2;
+    font-size: 48px;
+  }
+
+
   
   .leftFooter {
     width: 20%;
