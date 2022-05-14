@@ -49,7 +49,7 @@ import { connect, useSelector } from "react-redux";
  
 // store.subscribe(()=>  {token} = store.getState().token)
   export const createOrder = (order) => async (dispatch) => {
-    
+    const rootUrl = process.env.NODE_ENV === "production" ? "https://cryptic-eyrie-92448.herokuapp.com" : ""
     try {
       dispatch({ type: CREATE_ORDER_REQUEST });
   
@@ -59,7 +59,7 @@ import { connect, useSelector } from "react-redux";
           'authorization':store.getState().token.token
         },
       };
-      const { data } = await axios.post(`/api/v1/order/new`, order, config);
+      const { data } = await axios.post(`${rootUrl}/api/v1/order/new`, order, config);
   
       dispatch({ type: CREATE_ORDER_SUCCESS, payload: data });
     } catch (error) {
